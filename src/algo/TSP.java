@@ -20,7 +20,7 @@ public class TSP {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		TSP obj=new TSP();
-		double mat[][]=obj.readFile("tsp");
+		double mat[][]=obj.readFile("tsp_test");
 		
 		double adjMat[][]=new double[obj.n][obj.n];
 		
@@ -88,35 +88,28 @@ public class TSP {
 		for(int i=0;i<n;i++) {
 			S[i]=i+1;
 		}
-		Map<ArrayList<Integer>,Integer> hm=new HashMap<ArrayList<Integer>,Integer>();
+		
 		
 		ArrayList<ArrayList<Integer>> sets=subset(S,S.length);
 		
-		System.out.println("subset:"+sets.size());
-/*		int z=0;
-		for(ArrayList<Integer> l:sets) {
-			hm.put(l, z++);
-		}
-		System.out.println("hashmap");*/
-/*		for(Map.Entry<ArrayList<Integer>,Integer> l:hm.entrySet()) {
-			for(Integer s:l.getKey()) {
-				System.out.print(s+",");
+		Map<Integer,ArrayList<ArrayList<Integer>>> hm=new HashMap<Integer,ArrayList<ArrayList<Integer>>>();
+		ArrayList<ArrayList<Integer>> tmpHmList; 
+		for(int i=2;i<=n;i++) {
+			tmpHmList=new ArrayList<ArrayList<Integer>>();
+			for(ArrayList<Integer> s:sets) {
+				if(s.size()==i) {						
+					tmpHmList.add(s);									
+				}
 			}
-			System.out.println(l.getValue());
-		}*/
-//		double A[][]=new double[sets.size()][n];
+//			tmpHmList.clear();
+			hm.put(i, tmpHmList);
+		}
+		
+		System.out.println("subset:"+sets.size());
 		Map<ArrayList<Integer>, double[]> Amap=new HashMap<ArrayList<Integer>, double[]>();
 		
 		System.out.println("A");
 		
-/*		for(Map.Entry<ArrayList<Integer>, Integer> l:hm.entrySet()) {
-			if(l.getKey().size()==1) {
-				double[] tmp=new double[n];
-				tmp[0]=0;
-				Amap.put(l.getKey(), tmp);
-				break;
-			}				
-		}*/
 		
 		for(ArrayList<Integer> l:sets) {
 			if(l.size()==1) {
@@ -128,21 +121,16 @@ public class TSP {
 			}
 		}
 		
-/*		for(Map.Entry<ArrayList<Integer>, Integer> l:hm.entrySet()) {
-			if(l.getKey().size()==1)
-				A[l.getValue()][0]=0;
-			else
-				A[l.getValue()][0]=Integer.MAX_VALUE;
-		}*/
 		System.out.println("base case");
 		ArrayList<Integer> tmpList=new ArrayList<Integer>();
 		double[] tmp;
 		ArrayList<ArrayList<Integer>> delete=new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> setsSub=new ArrayList<ArrayList<Integer>>();
 		for(int m=2;m<=n;m++) {
+			setsSub=hm.get(m);
 			
-			
-			for(ArrayList<Integer> s:sets) {
-				if(s.size()==m) {
+			for(ArrayList<Integer> s:setsSub) {
+				
 					
 					for(int j:s) {
 						if(j!=1) {
@@ -157,10 +145,6 @@ public class TSP {
 							}
 							delete.add(tmpList);
 							for(int k:s) {
-/*								if(k!=j&&min>A[hm.get(tmpList)][k-1]+adjMat[k-1][j-1]) {
-
-									min=A[hm.get(tmpList)][k-1]+adjMat[k-1][j-1];
-								}*/
 //								System.out.println(k);
 //								System.out.println(Amap.get(tmpList)[k-1]);
 								if(k!=j&&min>Amap.get(tmpList)[k-1]+adjMat[k-1][j-1]) {
@@ -188,14 +172,10 @@ public class TSP {
 							}
 																						
 							Amap.put(s, tmp);
-//							if(j==s.get(s.size()-1))
-//								Amap.remove(tmpList);
 						}
 					}
-//					double tmp[];
-//					tmp=Amap.get(s);
 					
-				}
+				
 			}
 			for(ArrayList<Integer> d:delete) {
 				Amap.remove(d);
@@ -209,8 +189,6 @@ public class TSP {
 //		System.out.println(min);
 		for(int j=1;j<n;j++) {
 			
-//			if(min>A[hm.get(sets.get(sets.size()-1))][j]+adjMat[j][0])
-//				min=A[hm.get(sets.get(sets.size()-1))][j]+adjMat[j][0];
 			if(min>Amap.get(sets.get(sets.size()-1))[j]+adjMat[j][0])
 				min=Amap.get(sets.get(sets.size()-1))[j]+adjMat[j][0];
 //			System.out.println(Amap.get(sets.get(sets.size()-1))[j]);
@@ -267,7 +245,7 @@ public class TSP {
 	}
 	public double[][] readFile(String filename) {
 		try {
-			fr = new FileReader("C:\\Users\\tsogtbayarn\\Documents\\Workspace\\java\\" + filename + ".txt");
+			fr = new FileReader("/home/stark/Documents/Workspace/java/" + filename + ".txt");
 			br = new BufferedReader(fr);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
