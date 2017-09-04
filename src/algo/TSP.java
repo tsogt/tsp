@@ -20,7 +20,7 @@ public class TSP {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		TSP obj=new TSP();
-		double mat[][]=obj.readFile("tsp_test");
+		double mat[][]=obj.readFile("tsp");
 		
 		double adjMat[][]=new double[obj.n][obj.n];
 		
@@ -39,7 +39,7 @@ public class TSP {
 			System.out.println();
 		}
 */		
-		System.out.println(obj.algoTSP(adjMat));
+//		System.out.println(obj.algoTSP(adjMat));
 		
 /*		System.out.println(obj.n);
 		double m=Math.pow(2,25);
@@ -55,18 +55,18 @@ public class TSP {
 //		ArrayList<ArrayList<Integer>> retSet=obj.powerSet(set);
 		
 //		obj.subset(S, S.length);
-/*		Integer tmp[]= {1,2,3};
-		ArrayList<Integer> set=new ArrayList<Integer>(Arrays.asList(tmp));
-		ArrayList<ArrayList<Integer>> retSet=obj.powerSet(set);
+		int tmp[]= {1,2,3,4,5,6};
+//		ArrayList<Integer> set=new ArrayList<Integer>(Arrays.asList(tmp));
+//		ArrayList<ArrayList<Integer>> retSet=obj.powerSet(set);
 		
-//		ArrayList<ArrayList<Integer>> tmpList=obj.subset(tmp, tmp.length);
+		ArrayList<ArrayList<Integer>> tmpList=obj.subset(tmp, tmp.length);
 		
-		for(ArrayList<Integer> l:retSet) {
+		for(ArrayList<Integer> l:tmpList) {
 			for(int i=0;i<l.size();i++) {
 				System.out.print(l.get(i)+",");
 			}
 			System.out.println();
-		}*/
+		}
 /*		Map<ArrayList<Integer>,Integer> hm=new HashMap<ArrayList<Integer>,Integer>();
 		ArrayList<Integer> tmp=new ArrayList<Integer>();
 		tmp.add(1);
@@ -92,12 +92,12 @@ public class TSP {
 		
 		ArrayList<ArrayList<Integer>> sets=subset(S,S.length);
 		
-		System.out.println("susbset");
+		System.out.println("subset:"+sets.size());
 		int z=0;
 		for(ArrayList<Integer> l:sets) {
 			hm.put(l, z++);
 		}
-		
+		System.out.println("hashmap");
 /*		for(Map.Entry<ArrayList<Integer>,Integer> l:hm.entrySet()) {
 			for(Integer s:l.getKey()) {
 				System.out.print(s+",");
@@ -105,7 +105,7 @@ public class TSP {
 			System.out.println(l.getValue());
 		}*/
 		double A[][]=new double[sets.size()][n];
-		
+		System.out.println("A");
 		for(Map.Entry<ArrayList<Integer>, Integer> l:hm.entrySet()) {
 			if(l.getKey().size()==1)
 				A[l.getValue()][0]=0;
@@ -132,7 +132,7 @@ public class TSP {
 									min=A[hm.get(tmpList)][k-1]+adjMat[k-1][j-1];
 								}
 							}
-							System.out.println(min);
+//							System.out.println(min);
 							A[hm.get(s)][j-1]=min;									
 						}
 					}
@@ -198,7 +198,7 @@ public class TSP {
 	}
 	public double[][] readFile(String filename) {
 		try {
-			fr = new FileReader("/home/stark/Documents/Workspace/java/" + filename + ".txt");
+			fr = new FileReader("C:\\Users\\tsogtbayarn\\Documents\\Workspace\\java\\" + filename + ".txt");
 			br = new BufferedReader(fr);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
