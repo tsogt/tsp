@@ -39,7 +39,7 @@ public class TSP {
 			System.out.println();
 		}
 */		
-//		System.out.println(obj.algoTSP(adjMat));
+		System.out.println(obj.algoTSP(adjMat));
 		
 /*		System.out.println(obj.n);
 		double m=Math.pow(2,25);
@@ -55,7 +55,7 @@ public class TSP {
 //		ArrayList<ArrayList<Integer>> retSet=obj.powerSet(set);
 		
 //		obj.subset(S, S.length);
-		int tmp[]= {1,2,3,4,5,6};
+/*		int tmp[]= {1,2,3};
 //		ArrayList<Integer> set=new ArrayList<Integer>(Arrays.asList(tmp));
 //		ArrayList<ArrayList<Integer>> retSet=obj.powerSet(set);
 		
@@ -66,7 +66,7 @@ public class TSP {
 				System.out.print(l.get(i)+",");
 			}
 			System.out.println();
-		}
+		}*/
 /*		Map<ArrayList<Integer>,Integer> hm=new HashMap<ArrayList<Integer>,Integer>();
 		ArrayList<Integer> tmp=new ArrayList<Integer>();
 		tmp.add(1);
@@ -93,59 +93,128 @@ public class TSP {
 		ArrayList<ArrayList<Integer>> sets=subset(S,S.length);
 		
 		System.out.println("subset:"+sets.size());
-		int z=0;
+/*		int z=0;
 		for(ArrayList<Integer> l:sets) {
 			hm.put(l, z++);
 		}
-		System.out.println("hashmap");
+		System.out.println("hashmap");*/
 /*		for(Map.Entry<ArrayList<Integer>,Integer> l:hm.entrySet()) {
 			for(Integer s:l.getKey()) {
 				System.out.print(s+",");
 			}
 			System.out.println(l.getValue());
 		}*/
-		double A[][]=new double[sets.size()][n];
+//		double A[][]=new double[sets.size()][n];
+		Map<ArrayList<Integer>, double[]> Amap=new HashMap<ArrayList<Integer>, double[]>();
+		
 		System.out.println("A");
-		for(Map.Entry<ArrayList<Integer>, Integer> l:hm.entrySet()) {
+		
+/*		for(Map.Entry<ArrayList<Integer>, Integer> l:hm.entrySet()) {
+			if(l.getKey().size()==1) {
+				double[] tmp=new double[n];
+				tmp[0]=0;
+				Amap.put(l.getKey(), tmp);
+				break;
+			}				
+		}*/
+		
+		for(ArrayList<Integer> l:sets) {
+			if(l.size()==1) {
+				double[] tmp=new double[n];
+				tmp[0]=0;
+				Amap.put(l, tmp);
+				break;
+				
+			}
+		}
+		
+/*		for(Map.Entry<ArrayList<Integer>, Integer> l:hm.entrySet()) {
 			if(l.getKey().size()==1)
 				A[l.getValue()][0]=0;
 			else
 				A[l.getValue()][0]=Integer.MAX_VALUE;
-		}
+		}*/
 		System.out.println("base case");
-		
+		ArrayList<Integer> tmpList=new ArrayList<Integer>();
+		double[] tmp;
+		ArrayList<ArrayList<Integer>> delete=new ArrayList<ArrayList<Integer>>();
 		for(int m=2;m<=n;m++) {
+			
+			
 			for(ArrayList<Integer> s:sets) {
 				if(s.size()==m) {
+					
 					for(int j:s) {
 						if(j!=1) {
 							double min=Integer.MAX_VALUE;
-							ArrayList<Integer> tmpList=new ArrayList<Integer>();
-//							tmpList.clear();
+							
+							tmpList=new ArrayList<Integer>();
+							
+//							System.out.println("m:"+m+",j:"+j);
 							for(int r:s) {
 								if(r!=j)
 									tmpList.add(r);
 							}
+							delete.add(tmpList);
 							for(int k:s) {
-								if(k!=j&&min>A[hm.get(tmpList)][k-1]+adjMat[k-1][j-1]) {
-//									System.out.println("babe");
+/*								if(k!=j&&min>A[hm.get(tmpList)][k-1]+adjMat[k-1][j-1]) {
+
 									min=A[hm.get(tmpList)][k-1]+adjMat[k-1][j-1];
+								}*/
+//								System.out.println(k);
+//								System.out.println(Amap.get(tmpList)[k-1]);
+								if(k!=j&&min>Amap.get(tmpList)[k-1]+adjMat[k-1][j-1]) {
+
+									min=Amap.get(tmpList)[k-1]+adjMat[k-1][j-1];
+//									System.out.println(m+":"+Amap.get(tmpList)[k-1]+",wt:"+adjMat[k-1][j-1]+" k:"+k);
+									
 								}
+//								System.out.println("babe1");
+								
 							}
 //							System.out.println(min);
-							A[hm.get(s)][j-1]=min;									
+							
+
+							if(Amap.containsKey(s)) {
+								tmp=Amap.get(s);
+								tmp[j-1]=min;
+//								System.out.println(min);
+							}
+							else {
+								tmp=new double[n];
+								tmp[j-1]=min;
+								tmp[0]=Integer.MAX_VALUE;
+//								System.out.println("here");
+							}
+																						
+							Amap.put(s, tmp);
+//							if(j==s.get(s.size()-1))
+//								Amap.remove(tmpList);
 						}
 					}
+//					double tmp[];
+//					tmp=Amap.get(s);
+					
 				}
 			}
+			for(ArrayList<Integer> d:delete) {
+				Amap.remove(d);
+				
+			}
+			delete.clear();
+			System.out.println(m);
 		}
+//		System.out.println("map:"+Amap.size());
 		double min=Integer.MAX_VALUE;
 //		System.out.println(min);
 		for(int j=1;j<n;j++) {
 			
-			if(min>A[hm.get(sets.get(sets.size()-1))][j]+adjMat[j][0])
-				min=A[hm.get(sets.get(sets.size()-1))][j]+adjMat[j][0];
-//			System.out.println(A[hm.get(sets.get(sets.size()-1))][j]);
+//			if(min>A[hm.get(sets.get(sets.size()-1))][j]+adjMat[j][0])
+//				min=A[hm.get(sets.get(sets.size()-1))][j]+adjMat[j][0];
+			if(min>Amap.get(sets.get(sets.size()-1))[j]+adjMat[j][0])
+				min=Amap.get(sets.get(sets.size()-1))[j]+adjMat[j][0];
+//			System.out.println(Amap.get(sets.get(sets.size()-1))[j]);
+
 		}
 		
 		return min;
