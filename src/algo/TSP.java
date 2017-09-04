@@ -20,7 +20,7 @@ public class TSP {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		TSP obj=new TSP();
-		double mat[][]=obj.readFile("tsp_test");
+		double mat[][]=obj.readFile("tsp");
 		
 		double adjMat[][]=new double[obj.n][obj.n];
 		
@@ -105,6 +105,7 @@ public class TSP {
 			hm.put(i, tmpHmList);
 		}
 		
+		System.out.println("tmpHmList:"+hm.get(n).size());
 		System.out.println("subset:"+sets.size());
 		Map<ArrayList<Integer>, double[]> Amap=new HashMap<ArrayList<Integer>, double[]>();
 		
@@ -120,7 +121,9 @@ public class TSP {
 				
 			}
 		}
-		
+		int setSize=sets.size();
+		ArrayList<Integer> tmpListLater=sets.get(sets.size()-1);
+		sets.clear();
 		System.out.println("base case");
 		ArrayList<Integer> tmpList=new ArrayList<Integer>();
 		double[] tmp;
@@ -128,7 +131,7 @@ public class TSP {
 		ArrayList<ArrayList<Integer>> setsSub=new ArrayList<ArrayList<Integer>>();
 		for(int m=2;m<=n;m++) {
 			setsSub=hm.get(m);
-			
+			System.out.println(setsSub.size());
 			for(ArrayList<Integer> s:setsSub) {
 				
 					
@@ -183,14 +186,16 @@ public class TSP {
 			}
 			delete.clear();
 			System.out.println(m);
+			setsSub.clear();
+			hm.remove(m);
 		}
 //		System.out.println("map:"+Amap.size());
 		double min=Integer.MAX_VALUE;
 //		System.out.println(min);
 		for(int j=1;j<n;j++) {
 			
-			if(min>Amap.get(sets.get(sets.size()-1))[j]+adjMat[j][0])
-				min=Amap.get(sets.get(sets.size()-1))[j]+adjMat[j][0];
+			if(min>Amap.get(tmpListLater)[j]+adjMat[j][0])
+				min=Amap.get(tmpListLater)[j]+adjMat[j][0];
 //			System.out.println(Amap.get(sets.get(sets.size()-1))[j]);
 
 		}
@@ -245,7 +250,7 @@ public class TSP {
 	}
 	public double[][] readFile(String filename) {
 		try {
-			fr = new FileReader("/home/stark/Documents/Workspace/java/" + filename + ".txt");
+			fr = new FileReader("C:\\Users\\tsogtbayarn\\Documents\\Workspace\\java\\" + filename + ".txt");
 			br = new BufferedReader(fr);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
