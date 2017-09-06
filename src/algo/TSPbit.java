@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class TSPRec {
+public class TSPbit {
 	BufferedReader br;
 	FileReader fr;
 	int n;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		TSPRec obj=new TSPRec();
+		TSPbit obj=new TSPbit();
 		double mat[][]=obj.readFile("tsp");
 		
 		double adjMat[][]=new double[obj.n][obj.n];
@@ -39,7 +39,8 @@ public class TSPRec {
 			System.out.println();
 		}
 */		
-//		System.out.println(obj.algoTSP(adjMat));
+//		System.out.println(1<<1);
+		System.out.println(obj.algoTSP(adjMat));
 		
 /*		System.out.println(obj.n);
 		double m=Math.pow(2,25);
@@ -82,16 +83,128 @@ public class TSPRec {
 		
 		
 	}
-	public double algoTSP(double adjMat[][], ArrayList<ArrayList<Integer>> setsSub, Map<Integer,ArrayList<ArrayList<Integer>>> hm) {
-						
-		for(int m=2;m<=n;m++) {
-			setsSub=hm.get(m);
-			algoTSP(adjMat, setsSub, hm);	
-			
+	public double algoTSP(double adjMat[][]) {
+
+		int S[]=new int[n];
+		for(int i=0;i<n;i++) {
+			S[i]=i+1;
 		}
 		
 		
-		return 0;
+		ArrayList<ArrayList<Integer>> sets=subset(S,S.length);
+		
+		Map<Integer,ArrayList<ArrayList<Integer>>> hm=new HashMap<Integer,ArrayList<ArrayList<Integer>>>();
+		ArrayList<ArrayList<Integer>> tmpHmList; 
+		for(int i=2;i<=n;i++) {
+			tmpHmList=new ArrayList<ArrayList<Integer>>();
+			for(ArrayList<Integer> s:sets) {
+				if(s.size()==i) {						
+					tmpHmList.add(s);									
+				}
+			}
+//			tmpHmList.clear();
+			System.out.println(tmpHmList.size());
+			hm.put(i, tmpHmList);
+		}
+		
+		System.out.println("tmpHmList:"+hm.get(n).size());
+		System.out.println("subset:"+sets.size());
+		Map<ArrayList<Integer>, double[]> Amap=new HashMap<ArrayList<Integer>, double[]>();
+		
+		System.out.println("A");
+		
+		
+		for(ArrayList<Integer> l:sets) {
+			if(l.size()==1) {
+				double[] tmp=new double[n];
+				tmp[0]=0;
+				Amap.put(l, tmp);
+				break;
+				
+			}
+		}
+		int setSize=sets.size();
+		ArrayList<Integer> tmpListLater=sets.get(sets.size()-1);
+		sets.clear();
+		System.out.println("base case");
+		ArrayList<Integer> tmpList=new ArrayList<Integer>();
+		double[] tmp;
+		ArrayList<ArrayList<Integer>> delete=new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> setsSub;
+		System.gc();
+		for(int m=2;m<=n;m++) {
+			setsSub=hm.get(m);
+			System.out.println(setsSub.size());
+			for(ArrayList<Integer> s:setsSub) {
+				
+					
+					for(int j:s) {
+						if(j!=1) {
+							double min=Integer.MAX_VALUE;
+							
+							tmpList=new ArrayList<Integer>();
+							
+//							System.out.println("m:"+m+",j:"+j);
+							for(int r:s) {
+								if(r!=j)
+									tmpList.add(r);
+							}
+							delete.add(tmpList);
+							for(int k:s) {
+//								System.out.println(k);
+//								System.out.println(Amap.get(tmpList)[k-1]);
+								if(k!=j&&min>Amap.get(tmpList)[k-1]+adjMat[k-1][j-1]) {
+
+									min=Amap.get(tmpList)[k-1]+adjMat[k-1][j-1];
+//									System.out.println(m+":"+Amap.get(tmpList)[k-1]+",wt:"+adjMat[k-1][j-1]+" k:"+k);
+									
+								}
+//								System.out.println("babe1");
+								
+							}
+//							System.out.println(min);
+							
+
+							if(Amap.containsKey(s)) {
+								tmp=Amap.get(s);
+								tmp[j-1]=min;
+//								System.out.println(min);
+							}
+							else {
+								tmp=new double[n];
+								tmp[j-1]=min;
+								tmp[0]=Integer.MAX_VALUE;
+//								System.out.println("here");
+							}
+																						
+							Amap.put(s, tmp);
+						}
+					}
+					
+				
+			}
+			for(ArrayList<Integer> d:delete) {
+				Amap.remove(d);
+				
+			}
+			delete.clear();
+			System.out.println(m);
+			setsSub.clear();
+			hm.remove(m);
+			System.gc();
+		}
+//		System.out.println("map:"+Amap.size());
+		double min=Integer.MAX_VALUE;
+//		System.out.println(min);
+		for(int j=1;j<n;j++) {
+			
+			if(min>Amap.get(tmpListLater)[j]+adjMat[j][0])
+				min=Amap.get(tmpListLater)[j]+adjMat[j][0];
+//			System.out.println(Amap.get(sets.get(sets.size()-1))[j]);
+
+		}
+		
+		return min;
 	}
 	public ArrayList<ArrayList<Integer>> powerSet(ArrayList<Integer> originalSet) {
 		ArrayList<ArrayList<Integer>> sets = new ArrayList<ArrayList<Integer>>();

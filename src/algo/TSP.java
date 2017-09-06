@@ -102,6 +102,7 @@ public class TSP {
 				}
 			}
 //			tmpHmList.clear();
+			System.out.println(tmpHmList.size());
 			hm.put(i, tmpHmList);
 		}
 		
@@ -128,7 +129,8 @@ public class TSP {
 		ArrayList<Integer> tmpList=new ArrayList<Integer>();
 		double[] tmp;
 		ArrayList<ArrayList<Integer>> delete=new ArrayList<ArrayList<Integer>>();
-		ArrayList<ArrayList<Integer>> setsSub=new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> setsSub;
+		System.gc();
 		for(int m=2;m<=n;m++) {
 			setsSub=hm.get(m);
 			System.out.println(setsSub.size());
@@ -188,6 +190,7 @@ public class TSP {
 			System.out.println(m);
 			setsSub.clear();
 			hm.remove(m);
+			System.gc();
 		}
 //		System.out.println("map:"+Amap.size());
 		double min=Integer.MAX_VALUE;
